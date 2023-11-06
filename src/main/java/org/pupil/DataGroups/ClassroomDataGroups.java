@@ -10,7 +10,7 @@ public class ClassroomDataGroups implements IDataGroups {
 
     @Override
     public void addPerson(Person person) {
-        int groupIndex = parseKeyToIndex(person.getGroup());
+        int groupIndex = parseKeyToIndex(person.getGroupName());
         int firstNullIndex = getFirstNullIndex(persons[groupIndex]);
         if (firstNullIndex == persons[groupIndex].length) {
             persons[groupIndex] = increaseArray(persons[groupIndex]);

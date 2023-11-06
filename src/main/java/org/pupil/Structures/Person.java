@@ -1,16 +1,24 @@
 package org.pupil.Structures;
 
+import org.pupil.DataBase.Column;
+import org.pupil.DataBase.Table;
 import org.pupil.DataProcessing.Parser;
 
 import java.util.Arrays;
 
 // Определяем как будет выглядеть каждый ученик по его основным параметрам
+@Table(title = "person")
 public class Person {
 
+    @Column
     String lastName;
+    @Column
     String name;
+    @Column
     int age;
-    int group;
+    @Column
+    int groupName;
+    //@Column
     String[] rating;
 
     public Person(String[] csvLine) {
@@ -18,7 +26,7 @@ public class Person {
         this.lastName = parser.getLastNameFromCSVLine(csvLine);
         this.name = parser.getNameFromCSVLine(csvLine);
         this.age = parser.getAgeFromCSVLine(csvLine);
-        this.group = parser.getGroupFromCSVLine(csvLine);
+        this.groupName = parser.getGroupFromCSVLine(csvLine);
         this.rating = parser.getRatingFromCSVLine(csvLine);
     }
 
@@ -30,8 +38,8 @@ public class Person {
         return age;
     }
 
-    public int getGroup() {
-        return group;
+    public int getGroupName() {
+        return groupName;
     }
 
     public String[] getRating() {
@@ -44,7 +52,7 @@ public class Person {
                 "lastName='" + lastName + '\'' +
                 ", name=" + name + '\'' +
                 ", age=" + age +
-                ", group=" + group +
+                ", group=" + groupName +
                 ", rating=" + Arrays.toString(rating) +
                 '}';
     }
