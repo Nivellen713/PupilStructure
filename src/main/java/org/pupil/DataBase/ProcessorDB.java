@@ -21,8 +21,8 @@ public class ProcessorDB {
                 "SELECT * FROM person WHERE person_id = " + id)) {
             while (resultSet.next()) {
                 personParam = new String[10];
-                for (int i = 0; i < 3; i++) {
-                    personParam[i] = resultSet.getString(i + 1);
+                for (int i = 0; i < 4; i++) {
+                    personParam[i] = resultSet.getString(i + 2);
                 }
                 String[] rating = getRating(resultSet.getInt(6));
                 System.arraycopy(rating, 0, personParam, 4, rating.length);
