@@ -6,6 +6,7 @@ package org.pupil.DataBase;
 //import java.io.FileReader;
 //import java.io.IOException;
 //import java.lang.reflect.Field;
+
 import java.sql.*;
 //import java.util.HashMap;
 //import java.util.Map;
@@ -13,17 +14,11 @@ import java.sql.*;
 
 public class ProcessorDB {
 
-    private final ConnectorDB CONNECTOR_DB;
-
-    public ProcessorDB() {
-        CONNECTOR_DB = new ConnectorDB();
-    }
-
     public String[] getPersonById(int id) {
         String[] personParam = new String[10];
-        try {
-            ResultSet resultSet = CONNECTOR_DB.getStatement().executeQuery(
-                    "SELECT * FROM person WHERE person_id = " + id);
+        ConnectorDB connectorDB = new ConnectorDB();
+        try (ResultSet resultSet = connectorDB.getStatement().executeQuery(
+                "SELECT * FROM person WHERE person_id = " + id)) {
             while (resultSet.next()) {
                 personParam = new String[10];
                 for (int i = 0; i < 3; i++) {
@@ -32,32 +27,30 @@ public class ProcessorDB {
                 String[] rating = getRating(resultSet.getInt(6));
                 System.arraycopy(rating, 0, personParam, 4, rating.length);
             }
-            resultSet.close();
         } catch (SQLException sqlException) {
             sqlException.printStackTrace();
-            CONNECTOR_DB.disconnect();
+            connectorDB.disconnect();
         } finally {
-            CONNECTOR_DB.disconnect();
+            connectorDB.disconnect();
         }
         return personParam;
     }
 
     public String[] getRating(int ratingId) throws SQLException {
         String[] rating = new String[6];
-        try {
-            ResultSet resultSet = CONNECTOR_DB.getStatement().executeQuery(
-                    "SELECT * FROM rating WHERE rating_id = " + ratingId);
+        ConnectorDB connectorDB = new ConnectorDB();
+        try (ResultSet resultSet = connectorDB.getStatement().executeQuery(
+                "SELECT * FROM rating WHERE rating_id = " + ratingId)) {
             while (resultSet.next()) {
                 for (int i = 0; i < 6; i++) {
                     rating[i] = resultSet.getString(i + 1);
                 }
             }
-            resultSet.close();
         } catch (SQLException sqlException) {
             sqlException.printStackTrace();
-            CONNECTOR_DB.disconnect();
+            connectorDB.disconnect();
         } finally {
-            CONNECTOR_DB.disconnect();
+            connectorDB.disconnect();
         }
         return rating;
     }

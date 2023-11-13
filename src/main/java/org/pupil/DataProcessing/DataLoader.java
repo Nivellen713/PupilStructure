@@ -94,7 +94,7 @@ public class DataLoader implements IDataLoader {
 
     public void addAllPersonsFromDataBase(IDataGroups dataGroup) {
         ProcessorDB processorDB = new ProcessorDB();
-        for (int i = 1; i < 10_000; i++) {
+        for (int i = 1; i < 100_000; i++) {
             dataGroup.addPerson(new Person(processorDB.getPersonById(i)));
         }
     }
