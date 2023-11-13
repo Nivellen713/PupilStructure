@@ -10,9 +10,13 @@ public class StudentService {
     PersonNameDataGroup personNameDataGroup = new PersonNameDataGroup();
 
     public StudentService(IDataLoader dataLoader) {
-        dataLoader.addAllPerson(personAgeDataGroups);
-        dataLoader.addAllPerson(classroomDataGroups);
-        dataLoader.addAllPerson(personNameDataGroup);
+        dataLoader.addAllPersonsFromDataBase(personAgeDataGroups);
+        dataLoader.addAllPersonsFromDataBase(classroomDataGroups);
+        dataLoader.addAllPersonsFromDataBase(personNameDataGroup);
+
+//        dataLoader.addAllPersonFromCSV(personAgeDataGroups);
+//        dataLoader.addAllPersonFromCSV(classroomDataGroups);
+//        dataLoader.addAllPersonFromCSV(personNameDataGroup);
     }
 
     public PersonAgeDataGroups getPersonAgeDataGroups() {

@@ -21,6 +21,8 @@ public class Person {
     //@Column
     String[] rating;
 
+    double averageRating;
+
     public Person(String[] csvLine) {
         Parser parser = new Parser();
         this.lastName = parser.getLastNameFromCSVLine(csvLine);
@@ -44,6 +46,18 @@ public class Person {
 
     public String[] getRating() {
         return rating;
+    }
+
+    public String getName() {
+        return name;
+    }
+
+    public double getAverageRating() {
+        return averageRating;
+    }
+
+    public void setAverageRating(double averageRating) {
+        this.averageRating = averageRating;
     }
 
     @Override

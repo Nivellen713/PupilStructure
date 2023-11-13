@@ -1,5 +1,6 @@
 package org.pupil.DataGroups;
 
+import org.pupil.DataBase.StatisticDataBD;
 import org.pupil.Structures.Person;
 
 // Класс-наследник для хранения данных по возрасту
@@ -23,6 +24,11 @@ public class PersonAgeDataGroups implements IDataGroups {
         return key - 5;
     }
 
+    @Override
+    public Person[][] getPersons() {
+        return persons;
+    }
+
     private Person[][] getPersonOlderThan(int age) {
         int ageIndex = parseKeyToIndex(age);
         int amountAgesGroups = AGES_AMOUNT - ageIndex;    // Количество возрастов от искомого до максимального
@@ -44,6 +50,11 @@ public class PersonAgeDataGroups implements IDataGroups {
             }
         }
         return cutNullElements(excellentPersons);
+    }
+
+    public Person[][] getExcellentOlderThanFromDB(int age){
+        StatisticDataBD statisticDataBD = new StatisticDataBD();
+        return statisticDataBD.getExcellentOlderThan(age).getPersons();
     }
 
     private Person[] cutNullElements(Person[] people) {

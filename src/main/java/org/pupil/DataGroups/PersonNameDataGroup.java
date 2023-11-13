@@ -1,5 +1,6 @@
 package org.pupil.DataGroups;
 
+import org.pupil.DataBase.StatisticDataBD;
 import org.pupil.Structures.Person;
 
 // Класс-наследник для хранения данных по имени
@@ -10,17 +11,22 @@ public class PersonNameDataGroup implements IDataGroups {
 
     @Override
     public void addPerson(Person person) {
-        int ageIndex = parseKeyToIndex(person.getLastName().charAt(0));
-        int firstNullIndex = getFirstNullIndex(persons[ageIndex]);
-        if (firstNullIndex == persons[ageIndex].length) {
-            persons[ageIndex] = increaseArray(persons[ageIndex]);
+        int lastNameIndex = parseKeyToIndex(person.getLastName().charAt(0));
+        int firstNullIndex = getFirstNullIndex(persons[lastNameIndex]);
+        if (firstNullIndex == persons[lastNameIndex].length) {
+            persons[lastNameIndex] = increaseArray(persons[lastNameIndex]);
         }
-        persons[ageIndex][firstNullIndex] = person;
+        persons[lastNameIndex][firstNullIndex] = person;
     }
 
     @Override
     public int parseKeyToIndex(int key) {
         return key - 1040; // (int) 'А' = 1040
+    }
+
+    @Override
+    public Person[][] getPersons() {
+        return new Person[0][];
     }
 
     public Person[] getByLastName(String lastName) {
@@ -34,6 +40,11 @@ public class PersonNameDataGroup implements IDataGroups {
             }
         }
         return cutNullElements(lastNamePersons);
+    }
+
+    public Person[][] getAverageRatingByLastNameFromDB(String lastname){
+        StatisticDataBD statisticDataBD = new StatisticDataBD();
+        return statisticDataBD.getAverageRatingByLastName(lastname).getPersons();
     }
 
     private Person[] cutNullElements(Person[] people) {

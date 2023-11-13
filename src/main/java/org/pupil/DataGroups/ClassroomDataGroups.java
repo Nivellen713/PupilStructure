@@ -1,5 +1,6 @@
 package org.pupil.DataGroups;
 
+import org.pupil.DataBase.StatisticDataBD;
 import org.pupil.Structures.Person;
 
 // Класс-наследник для хранения данных по учебным группам
@@ -38,9 +39,19 @@ public class ClassroomDataGroups implements IDataGroups {
         return ratingSum / ratingAmount;
     }
 
+    public double getAverageRatingFromDB(int group){
+        StatisticDataBD statisticDataBD = new StatisticDataBD();
+        return statisticDataBD.getAverageRatingByGroup(group);
+    }
+
     @Override
     public int parseKeyToIndex(int key) {
         return key - 1;
+    }
+
+    @Override
+    public Person[][] getPersons() {
+        return new Person[0][];
     }
 }
 

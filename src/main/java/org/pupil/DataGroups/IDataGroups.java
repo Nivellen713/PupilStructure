@@ -7,6 +7,8 @@ public interface IDataGroups {
 
     int parseKeyToIndex(int key);
 
+    Person[][] getPersons();
+
     default int getFirstNullIndex(Person[] persons) {
         int i = persons.length - 1;
         int firstNullIndex = i;

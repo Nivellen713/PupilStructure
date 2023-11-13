@@ -3,5 +3,6 @@ package org.pupil.DataProcessing;
 import org.pupil.DataGroups.IDataGroups;
 
 public interface IDataLoader {
-    void addAllPerson(IDataGroups dataGroups);
+    void addAllPersonFromCSV(IDataGroups dataGroups);
+    void addAllPersonsFromDataBase(IDataGroups dataGroups);
 }
