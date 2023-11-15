@@ -38,6 +38,17 @@ public class ClassroomDataGroups implements IDataGroups {
         return ratingSum / ratingAmount;
     }
 
+    public Person getPerson(String lastname, String name, int group) {
+        Person person = null;
+        for (int i = 0; i < persons[group].length; i++) {
+            if (persons[group][i].getLastName().equals(lastname)
+                    && persons[group][i].getName().equals(name)) {
+                person = persons[group][i];
+            }
+        }
+        return person;
+    }
+
     @Override
     public int parseKeyToIndex(int key) {
         return key - 1;

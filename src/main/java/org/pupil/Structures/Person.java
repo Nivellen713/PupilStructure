@@ -22,6 +22,14 @@ public class Person {
         this.rating = parser.getRatingFromCSVLine(csvLine);
     }
 
+    public void setRating(int markIndex, int markValue){
+        rating[markIndex] = String.valueOf(markValue);
+    }
+
+    public String getName() {
+        return name;
+    }
+
     public String getLastName() {
         return lastName;
     }

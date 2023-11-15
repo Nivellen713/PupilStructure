@@ -23,6 +23,19 @@ public class PersonNameDataGroup implements IDataGroups {
         return key - 1040; // (int) 'А' = 1040
     }
 
+    @Override
+    public Person getPerson(String lastname, String name, int group) {
+        Person person = null;
+        char firstLetterCode = name.charAt(0);
+        for (int i = 0; i < persons[firstLetterCode].length; i++) {
+            if (persons[firstLetterCode][i].getLastName().equals(lastname)
+                    && persons[firstLetterCode][i].getName().equals(name)) {
+                person = persons[firstLetterCode][i];
+            }
+        }
+        return person;
+    }
+
     public Person[] getByLastName(String lastName) {
         int firstLetterIndex = parseKeyToIndex(lastName.charAt(0));
         Person[] lastNamePersons = new Person[SIZE];

@@ -25,4 +25,6 @@ public interface IDataGroups {
         return arrayToIncrease;
     }
 
+    Person getPerson(String lastname, String name, int group);
+
 }

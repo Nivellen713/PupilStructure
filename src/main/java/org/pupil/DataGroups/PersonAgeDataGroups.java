@@ -23,6 +23,11 @@ public class PersonAgeDataGroups implements IDataGroups {
         return key - 5;
     }
 
+    @Override
+    public Person getPerson(String lastname, String name, int group) {
+        return new ClassroomDataGroups().getPerson(lastname, name, group);
+    }
+
     private Person[][] getPersonOlderThan(int age) {
         int ageIndex = parseKeyToIndex(age);
         int amountAgesGroups = AGES_AMOUNT - ageIndex;    // Количество возрастов от искомого до максимального
