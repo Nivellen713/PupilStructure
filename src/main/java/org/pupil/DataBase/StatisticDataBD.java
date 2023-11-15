@@ -2,7 +2,6 @@ package org.pupil.DataBase;
 
 import org.pupil.DataGroups.IDataGroups;
 import org.pupil.DataGroups.PersonAgeDataGroups;
-import org.pupil.DataGroups.PersonNameDataGroup;
 import org.pupil.Structures.Person;
 
 import java.sql.*;
@@ -17,58 +16,41 @@ public class StatisticDataBD {
     }
 
     public double getAverageRatingByGroup(int groupNum) {
-        double averageRating = 0.0;
+        double average = 0.0;
+        int count = 0;
         try {
             ResultSet resultSet = CONNECTOR_DB.getStatement().executeQuery(
-                    "SELECT rating_id FROM person WHERE \"group\" = " + groupNum);
-            LinkedList<Integer> ratingId = new LinkedList<>();
+                    "SELECT (physics, mathematics, rus, literature, geometry, informatics)/6 as avg " +
+                            "FROM rating " +
+                            "JOIN person ON person.rating_id = rating.rating_id " +
+                            "WHERE \"group\" = " + groupNum);
+
             while (resultSet.next()) {
-                ratingId.add(resultSet.getInt(1));
+                average += resultSet.getDouble("avg");
+                count++;
             }
             resultSet.close();
-            int count = 0;
-            for (int id : ratingId) {
-                resultSet = CONNECTOR_DB.getStatement().executeQuery(
-                        "SELECT * FROM rating WHERE rating_id = " + id);
-                while (resultSet.next()) {
-                    for (int i = 2; i <= 6; i++) {
-                        averageRating += resultSet.getInt(i);
-                        count++;
-                    }
-                }
-            }
-            resultSet.close();
-            averageRating /= count;
+
         } catch (SQLException sqlException) {
             sqlException.printStackTrace();
-            CONNECTOR_DB.disconnect();
         } finally {
             CONNECTOR_DB.disconnect();
         }
-        return averageRating;
+        return average / count;
     }
 
     public IDataGroups getExcellentOlderThan(int age) {
         IDataGroups dataGroups = new PersonAgeDataGroups();
-        LinkedList<Integer> excellentPersonIdOlderThan = new LinkedList<>();
         try {
             ResultSet resultSet = CONNECTOR_DB.getStatement().executeQuery(
-                    "SELECT rating_id FROM person WHERE age >= " + age
-            );
-            LinkedList<Integer> ratingIdPersonsOlderThan = new LinkedList<>();
+                    "SELECT person_id " +
+                            "FROM person " +
+                            "JOIN rating ON person.rating_id = rating.rating_id " +
+                            "WHERE age>= " + age);
+            // Используется, чтобы позже забрать все необходимые данные из базы для создания объекта Person
+            LinkedList<Integer> excellentPersonIdOlderThan = new LinkedList<>();
             while (resultSet.next()) {
-                ratingIdPersonsOlderThan.add(resultSet.getInt(1));
-            }
-            resultSet.close();
-            resultSet = CONNECTOR_DB.getStatement().executeQuery(
-                    """
-                            SELECT * FROM rating WHERE physics = 5 AND mathematics = 5 AND rus = 5 AND literature = 5 AND geometry = 5 AND  informatics = 5
-                            """
-            );
-            for (int id : ratingIdPersonsOlderThan) {
-                if (resultSet.getInt(1) == id) {
-                    excellentPersonIdOlderThan.add(resultSet.getInt(1));
-                }
+                excellentPersonIdOlderThan.add(resultSet.getInt("person_id"));
             }
             resultSet.close();
             ProcessorDB processorDB = new ProcessorDB();
@@ -77,7 +59,6 @@ public class StatisticDataBD {
             }
         } catch (SQLException sqlException) {
             sqlException.printStackTrace();
-            CONNECTOR_DB.disconnect();
         } finally {
             CONNECTOR_DB.disconnect();
         }
@@ -85,35 +66,29 @@ public class StatisticDataBD {
     }
 
     public IDataGroups getAverageRatingByLastName(String lastname) {
-        IDataGroups dataGroups = new PersonNameDataGroup();
+        IDataGroups dataGroups = new PersonAgeDataGroups();
+        LinkedList<Double> averageMarks = new LinkedList<>();
+        LinkedList<Integer> personId = new LinkedList<>();
         try {
             ResultSet resultSet = CONNECTOR_DB.getStatement().executeQuery(
-                    "SELECT * FROM person WHERE family = " + lastname
-            );
-            LinkedList<Integer> ratingId = new LinkedList<>();
+                    "SELECT person_id FROM person " +
+                            "UNION SELECT (physics, mathematics, rus, literature, geometry, informatics)/6 as avg " +
+                            "FROM rating " +
+                            "JOIN person ON person.rating_id = rating.rating_id " +
+                            "WHERE family= " + lastname);
             while (resultSet.next()) {
-                ratingId.add(resultSet.getInt(6));
+                averageMarks.add(resultSet.getDouble("avg"));
+                personId.add(resultSet.getInt("person_id"));
             }
             resultSet.close();
-            for (int id : ratingId) {
-                resultSet = CONNECTOR_DB.getStatement().executeQuery(
-                        "SELECT physics AND mathematics AND rus AND informatics AND literature AND geometry " +
-                                "FROM rating WHERE rating_id = " + id
-                );
-                double averageRating = 0.0;
-                for (int i = 1; i <= 6; i++) {
-                    averageRating += resultSet.getDouble(i);
-                }
-                resultSet.close();
-                averageRating /= 6;
-                ProcessorDB processorDB = new ProcessorDB();
-                Person person = new Person(processorDB.getPersonById(id));
-                person.setAverageRating(averageRating);
+            ProcessorDB processorDB = new ProcessorDB();
+            for (int i = 0; i < personId.size(); i++) {
+                Person person = new Person(processorDB.getPersonById(personId.get(i)));
+                person.setAverageRating(averageMarks.get(i));
                 dataGroups.addPerson(person);
             }
         } catch (SQLException sqlException) {
             sqlException.printStackTrace();
-            CONNECTOR_DB.disconnect();
         } finally {
             CONNECTOR_DB.disconnect();
         }
